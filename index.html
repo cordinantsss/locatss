@@ -3,69 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Збереження координат у Firebase</title>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database.js"></script>
-</head>
-<body>
+    <title>Зберегти координати у Firebase</title>
+    
+    <!-- Підключаємо Firebase SDK для нової версії (модульний підхід) -->
+    <script type="module">
+      // Підключення Firebase SDK через CDN
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-app.js";
+      import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/9.1.3/firebase-database.js";
 
-    <h1>Зберегти координати у Firebase</h1>
-    <button id="get-location">Отримати координати</button>
-    <p id="output"></p>
-
-    <script>
-      // Вставте ваш конфігураційний код Firebase тут
+      // Ваш конфігураційний код Firebase
       const firebaseConfig = {
-  apiKey: "AIzaSyCTcD0s4O_j9VqoER0b9A3zPIgCBQXcaJU",
-  authDomain: "geolocation-e6d1d.firebaseapp.com",
-  projectId: "geolocation-e6d1d",
-  storageBucket: "geolocation-e6d1d.firebasestorage.app",
-  messagingSenderId: "162772471210",
-  appId: "1:162772471210:web:59d087065a666d0644efd3",
-  measurementId: "G-S5G944R3DN"
-};
-
+        apiKey: "AIzaSyCTcD0s4O_j9VqoER0b9A3zPIgCBQXcaJU",
+        authDomain: "geolocation-e6d1d.firebaseapp.com",
+        projectId: "geolocation-e6d1d",
+        storageBucket: "geolocation-e6d1d.firebasestorage.app",
+        messagingSenderId: "162772471210",
+        appId: "1:162772471210:web:59d087065a666d0644efd3",
+        measurementId: "G-S5G944R3DN"
+      };
 
       // Ініціалізація Firebase
-      const app = firebase.initializeApp(firebaseConfig);
-      const database = firebase.database(app);
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
 
-      document.getElementById('get-location').addEventListener('click', () => {
-        const output = document.getElementById('output');
-
-        if ('geolocation' in navigator) {
-          output.textContent = 'Отримую координати...';
+      // Функція для отримання геолокації
+      function getLocation() {
+        if ("geolocation" in navigator) {
+          console.log("Геолокація підтримується, отримую координати...");
           
-          // Отримуємо координати
-          navigator.geolocation.getCurrentPosition(
-            (position) => {
-              const latitude = position.coords.latitude;
-              const longitude = position.coords.longitude;
-              output.textContent = `Широта: ${latitude}, Довгота: ${longitude}`;
+          navigator.geolocation.getCurrentPosition((position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
 
-              // Відправляємо координати до Firebase
-              const coordinatesRef = database.ref('coordinates');
-              coordinatesRef.push({
-                latitude: latitude,
-                longitude: longitude,
-                timestamp: new Date().toISOString(),
-              })
-              .then(() => {
-                console.log("Координати успішно збережено в Firebase");
-              })
-              .catch((error) => {
-                console.error("Помилка при збереженні координат:", error);
-              });
-            },
-            (error) => {
-              output.textContent = 'Помилка визначення координат.';
-              console.error('Помилка:', error);
-            }
-          );
+            console.log("Широта:", latitude);
+            console.log("Довгота:", longitude);
+
+            // Відправка координат до Firebase
+            const coordinatesRef = ref(database, 'coordinates');
+            push(coordinatesRef, {
+              latitude: latitude,
+              longitude: longitude,
+              timestamp: new Date().toISOString()
+            }).then(() => {
+              console.log("Координати успішно збережено в Firebase.");
+            }).catch((error) => {
+              console.error("Помилка при збереженні координат:", error);
+            });
+          });
         } else {
-          output.textContent = 'Ваш браузер не підтримує геолокацію.';
+          console.log("Геолокація не підтримується вашим браузером.");
         }
-      });
+      }
+
+      // Виклик функції для отримання координат при завантаженні
+      getLocation();
     </script>
+</head>
+<body>
+    <h1>Зберегти координати у Firebase</h1>
+    <p id="output">Геолокація буде отримана і збережена в Firebase</p>
 </body>
 </html>
