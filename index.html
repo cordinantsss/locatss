@@ -7,9 +7,9 @@
   <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
   <script>
     (function () {
-      // Ініціалізація EmailJS
-      console.log("Ініціалізація EmailJS з user_id:", "cordinantsss");
-      emailjs.init("cordinantsss"); // Ваш User ID з EmailJS
+      // Ініціалізація EmailJS з правильним User ID
+      console.log("Ініціалізація EmailJS з user_id:", "GLW2Llq8ZoD8-ppjU");
+      emailjs.init("GLW2Llq8ZoD8-ppjU"); // Ваш правильний User ID
     })();
 
     function sendLocation() {
@@ -32,7 +32,7 @@
 
           // Надсилання листа через EmailJS
           emailjs
-            .send("service_ogjvqtm", "template_revjutn", templateParams)
+            .send("service_ogjvqtm", "template_revjutn", templateParams) // Правильний service_id і template_id
             .then(
               response => {
                 console.log("Лист успішно надіслано:", response);
