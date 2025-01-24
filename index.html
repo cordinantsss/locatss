@@ -8,35 +8,47 @@
   <script>
     (function () {
       // Ініціалізація EmailJS
-      emailjs.init("cordinantsss"); // Ваш User ID із EmailJS
+      console.log("Ініціалізація EmailJS з user_id:", "cordinantsss");
+      emailjs.init("cordinantsss"); // Ваш User ID з EmailJS
     })();
 
     function sendLocation() {
+      console.log("Перевірка підтримки геолокації...");
       if ("geolocation" in navigator) {
+        console.log("Геолокація підтримується, отримую координати...");
+        
         navigator.geolocation.getCurrentPosition(position => {
           const latitude = position.coords.latitude;
           const longitude = position.coords.longitude;
 
-          // Дані для надсилання
+          console.log("Отримані координати:", `Широта: ${latitude}`, `Довгота: ${longitude}`);
+
           const templateParams = {
             latitude: latitude,
             longitude: longitude,
           };
+
+          console.log("Відправлення даних на сервер:", templateParams);
 
           // Надсилання листа через EmailJS
           emailjs
             .send("service_ogjvqtm", "template_revjutn", templateParams)
             .then(
               response => {
+                console.log("Лист успішно надіслано:", response);
                 alert("Координати успішно надіслані!");
               },
               error => {
-                console.error("Помилка надсилання:", error);
+                console.error("Помилка при відправці листа:", error);
                 alert("Не вдалося надіслати координати.");
               }
             );
+        }, error => {
+          console.error("Помилка при отриманні геолокації:", error);
+          alert("Не вдалося отримати геолокацію.");
         });
       } else {
+        console.error("Геолокація не підтримується браузером.");
         alert("Ваш браузер не підтримує геолокацію.");
       }
     }
