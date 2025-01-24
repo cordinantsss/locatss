@@ -1,64 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="uk">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Send Location</title>
-  <script type="module">
-    import emailjs from "https://cdn.emailjs.com/dist/email.min.js";
-    
-    (function () {
-      // Ініціалізація EmailJS з правильним User ID
-      console.log("Ініціалізація EmailJS з user_id:", "GLW2Llq8ZoD8-ppjU");
-      emailjs.init("GLW2Llq8ZoD8-ppjU"); // Ваш правильний User ID
-    })();
-
-    function sendLocation() {
-      console.log("Перевірка підтримки геолокації...");
-      if ("geolocation" in navigator) {
-        console.log("Геолокація підтримується, отримую координати...");
-        
-        navigator.geolocation.getCurrentPosition(position => {
-          const latitude = position.coords.latitude;
-          const longitude = position.coords.longitude;
-
-          console.log("Отримані координати:", `Широта: ${latitude}`, `Довгота: ${longitude}`);
-
-          const templateParams = {
-            latitude: latitude,
-            longitude: longitude,
-          };
-
-          console.log("Відправлення даних на сервер:", templateParams);
-
-          // Надсилання листа через EmailJS
-          emailjs
-            .send("service_ogjvqtm", "template_revjutn", templateParams) // Правильний service_id і template_id
-            .then(
-              response => {
-                console.log("Лист успішно надіслано:", response);
-                alert("Координати успішно надіслані!");
-              },
-              error => {
-                console.error("Помилка при відправці листа:", error);
-                alert("Не вдалося надіслати координати.");
-              }
-            );
-        }, error => {
-          console.error("Помилка при отриманні геолокації:", error);
-          alert("Не вдалося отримати геолокацію.");
-        });
-      } else {
-        console.error("Геолокація не підтримується браузером.");
-        alert("Ваш браузер не підтримує геолокацію.");
-      }
-    }
-
-    // Виклик функції автоматично при завантаженні сторінки
-    window.onload = sendLocation;
-  </script>
+  <title>HTML5 Geolocation API</title>
 </head>
 <body>
-  <h1>Визначення геолокації...</h1>
+  <h1>Геолокація</h1>
+  <button id="get-location">Отримати мої координати</button>
+  <p id="output"></p>
+
+  <script>
+    document.getElementById('get-location').addEventListener('click', () => {
+      const output = document.getElementById('output');
+
+      if ('geolocation' in navigator) {
+        output.textContent = 'Отримую координати...';
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            output.textContent = `Широта: ${latitude}, Довгота: ${longitude}`;
+            console.log(`Координати: Широта: ${latitude}, Довгота: ${longitude}`);
+          },
+          (error) => {
+            switch (error.code) {
+              case error.PERMISSION_DENIED:
+                output.textContent = 'Доступ до геолокації заборонено.';
+                break;
+              case error.POSITION_UNAVAILABLE:
+                output.textContent = 'Інформація про місцезнаходження недоступна.';
+                break;
+              case error.TIMEOUT:
+                output.textContent = 'Час очікування вичерпано.';
+                break;
+              default:
+                output.textContent = 'Невідома помилка.';
+                break;
+            }
+            console.error('Помилка:', error);
+          }
+        );
+      } else {
+        output.textContent = 'Ваш браузер не підтримує геолокацію.';
+      }
+    });
+  </script>
 </body>
 </html>
