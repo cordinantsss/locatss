@@ -4,8 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Send Location</title>
-  <script src="https://cdn.emailjs.com/dist/email.min.js"></script>
-  <script>
+  <script type="module">
+    import emailjs from "https://cdn.emailjs.com/dist/email.min.js";
+    
     (function () {
       // Ініціалізація EmailJS з правильним User ID
       console.log("Ініціалізація EmailJS з user_id:", "GLW2Llq8ZoD8-ppjU");
